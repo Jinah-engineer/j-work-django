@@ -14,3 +14,5 @@ urlpatterns = [
     path('board_update', board01.views.board_update, name="board_update"),
     path('board_delete', board01.views.board_delete, name="board_delete"),
 ]
+
+# path 에 숫자가 mapping 될 경우 : path('<int:board.bno>/', board.views.board_detail),
