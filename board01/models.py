@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 from ckeditor.fields import RichTextField
 from ckeditor_uploader.fields import RichTextUploadingField
@@ -18,7 +20,7 @@ class Board(models.Model):
     b_writer = models.CharField(db_column='b_writer', max_length=50)
     parent_no = models.IntegerField(db_column='parent_no', default=0)
     b_count = models.IntegerField(db_column='b_count', default=0)
-    b_date = models.DateTimeField(db_column='b_date', )
+    b_date = models.DateTimeField(db_column='b_date', default=datetime.now, blank=True)
     usage_flag = models.CharField(db_column='usage_flag', max_length=10, default='1')
 
 

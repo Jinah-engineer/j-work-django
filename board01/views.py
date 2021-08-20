@@ -1,17 +1,16 @@
-from django.core.exceptions import ObjectDoesNotExist
 # render >> 데이터 값을 받아온 뒤 html로 데이터를 보내기 위한 함수
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from requests import Response
 
 from board01.models import Board
 import logging
-
-# from .forms import CreateBoard
-# logger = logging.getLogger('pybo')
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from django.db import connection
-
 import pymysql
+
 
 # # SQL Alchemy part
 # from sqlalchemy import create_engine, select
@@ -35,7 +34,7 @@ def home(request):
 
 def board(request):
     rsBoard = Board.objects.all()
-    # print(rsBoard)
+    print(rsBoard)
 
     return render(request, "board_list.html", {
         'rsBoard': rsBoard
@@ -55,11 +54,9 @@ def board_insert(request):
     if btitle != "":
         rows = Board.objects.create(b_title=btitle, b_note=bnote, b_writer=bwriter)
         return redirect('/board')
-        # log
 
     else:
         return redirect('/board_write')
-    logger.error('wrong************')
 
 def board_view(request):
     bno = request.GET['b_no']
@@ -109,5 +106,35 @@ def board_delete(request):
     rows = Board.objects.get(b_no=bno).delete()
 
     return redirect('/board')
+
+# dashboard
+def dashboard(request):
+    return render(request, 'dashboard.html')
+
+# Ajax
+def board_ajax(request):
+    # rsBoard = Board.objects.all()
+    # print(rsBoard)
+    rsBoard = Board.objects.all()
+
+    return render(request, "board_ajax.html", {
+        'rsBoard': rsBoard
+    })
+
+@csrf_exempt
+def board_deleteajax(request):
+
+    bno = request.GET['b_no']
+
+    rsBoard = Board.objects.get(b_no=bno).delete()
+    # rsBoard.save()
+
+    data = {}
+    data['result_msg'] = 'Deleted...'
+
+    logger.info('******************************************')
+    logger.info(data)
+
+    return JsonResponse(data, content_type="application/json")
 
 
